@@ -56,7 +56,7 @@
             plain
             size="mini"
             :disabled="single"
-            @click="handleUpdate"
+            @click="handleEdit"
         ><i i-carbon-edit></i>修改</el-button
         >
         <el-button
@@ -69,7 +69,7 @@
         >
         <el-table
             v-loading="loading"
-            :data="stuList"
+            :data="stuInfos.value"
             @selection-change="handleSelectionChange"
         >
             <el-table-column
@@ -81,14 +81,14 @@
                 label="学号"
                 align="center"
                 key="id"
-                prop="id"
+                prop="student_id"
                 v-if="columns[0].visible"
             />
             <el-table-column
                 label="姓名"
                 align="center"
                 key="name"
-                prop="name"
+                prop="student_name"
                 v-if="columns[1].visible"
                 :show-overflow-tooltip="true"
             />
@@ -98,23 +98,22 @@
                 key="sex"
                 prop="sex"
                 v-if="columns[2].visible"
-                :show-overflow-tooltip="true"
             />
             <el-table-column
                 label="学院"
                 align="center"
                 key="dept"
-                prop="dept"
+                prop="s_dept.dept_name"
                 v-if="columns[3].visible"
-                :show-overflow-tooltip="true"
+                width="250"
             />
             <el-table-column
                 label="班级"
                 align="center"
                 key="class"
-                prop="class"
+                prop="s_class.class_name"
                 v-if="columns[4].visible"
-                width="120"
+                width="250"
             />
             <el-table-column
                 label="操作"
@@ -122,22 +121,17 @@
                 width="160"
                 class-name="small-padding fixed-width"
             >
-                <template slot-scope="scope">
+                <template #default="scope">
                     <el-button
                         size="mini"
                         type="text"
-                        icon="el-icon-edit"
                         @click="handleEdit(scope.row)"
-                        v-hasPermi="['system:user:edit']"
-                    ><i i-carbon-edit>修改</i></el-button>
+                    ><i i-carbon-edit></i>修改</el-button>
                     <el-button
-                        v-if="scope.row.userId !== 1"
                         size="mini"
                         type="text"
-                        icon="el-icon-delete"
                         @click="handleDelete(scope.row)"
-                        v-hasPermi="['system:user:remove']"
-                    ><i i-ic-baseline-delete-outline>删除</i></el-button>
+                    ><i i-ic-baseline-delete-outline></i>删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -145,16 +139,22 @@
 </template>
 
 <script setup>
+    import axios from "axios";
+    import {stuInfoList} from "../../utils/api";
     // 加载标志
-    let loading = ref(false)
+    let loading = ref(true)
     //选中数组
-    let ids = ref([])
+    let ids = reactive({
+      value: []
+    })
     // 非单个禁用
     let single = ref(true)
     // 非多个禁用
     let multiple = ref(true)
     // 学生信息列表
-    let stuList = ref([])
+    let stuInfos = reactive({
+      value: []
+    })
     // 查询参数
     let queryParams = reactive({
         pageNum: 1,
@@ -171,8 +171,13 @@
         {key: 4, value: '班级', visible: true}
     ])
     // 查询学生信息列表
-    const getList = () => {
-
+    const getList = data => {
+      loading.value = true
+      stuInfoList(queryParams).then(value => {
+        stuInfos.value = value.data.data
+        console.log(value)
+        loading.value = false
+      })
     }
     // 重置表单信息
     const reset = () => {
@@ -209,6 +214,8 @@
     const handleDelete = (row) => {
         reset()
     }
+
+    getList()
 </script>
 
 <style scoped>
