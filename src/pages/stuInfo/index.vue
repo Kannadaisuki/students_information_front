@@ -62,25 +62,15 @@
     ><i i-carbon-edit></i>修改
     </el-button
     >
-    <el-popconfirm
-        confirm-button-text="Yes"
-        cancel-button-text="No"
-        icon-color="#626AEF"
-        title="Are you sure to delete this?"
-        @confirm="handleDelete"
+    <el-button
+        type="danger"
+        plain
+        size="mini"
+        :disabled="multiple"
+        @click="handleDelete"
+    ><i i-ic-baseline-delete-outline></i>删除
+    </el-button
     >
-      <template #reference>
-        <el-button
-            type="danger"
-            plain
-            size="mini"
-            :disabled="multiple"
-            @click="confirmDelete"
-        ><i i-ic-baseline-delete-outline></i>删除
-        </el-button
-        >
-      </template>
-    </el-popconfirm>
     <el-table
         v-loading="loading"
         :data="stuInfos.value"
@@ -142,21 +132,12 @@
               @click="handleEdit(scope.row)"
           ><i i-carbon-edit></i>修改
           </el-button>
-          <el-popconfirm
-              confirm-button-text="Yes"
-              cancel-button-text="No"
-              icon-color="#626AEF"
-              title="Are you sure to delete this?"
-              @confirm="handleDelete(scope.row)"
-          >
-            <template #reference>
-              <el-button
-                  size="mini"
-                  type="text"
-              ><i i-ic-baseline-delete-outline></i>删除
-              </el-button>
-            </template>
-          </el-popconfirm>
+          <el-button
+              size="mini"
+              type="text"
+              @click="handleDelete(scope.row)"
+          ><i i-ic-baseline-delete-outline></i>删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -173,48 +154,100 @@
         mt-10px
     />
 
-  <!--  学生信息添加框  -->
+    <!--  学生信息添加框  -->
     <el-dialog
       v-model="isAdding"
       :title="title"
-      append-to-body="true"
+      append-to-body
     >
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button
+              type="primary"
+              @click="add"
+          >确认</el-button>
+          <el-button @click="isAdding = false">取消</el-button>
+        </span>
+      </template>
+    </el-dialog>
 
+    <!--  确认删除框  -->
+    <el-dialog
+        v-model="isDeleting"
+        title="提示"
+        width="30%"
+        append-to-body
+    >
+      <span>是否确认删除所选学生信息？</span>
+      <template #footer>
+      <span class="dialog-footer">
+        <el-button
+            type="primary"
+            @click="del"
+        >确认</el-button>
+        <el-button @click="isDeleting = false">取消</el-button>
+      </span>
+      </template>
     </el-dialog>
   </div>
 </template>
 
 <script setup>
-import {deleteStu, stuInfoList} from "../../utils/api"
+import {addStu, deleteStu, stuInfoList} from "../../utils/api"
 // 加载标志
-let loading = ref(true)
+const loading = ref(true)
 // 新增学生信息标志
-let isAdding = ref(true)
+const isAdding = ref(false)
+// 删除学生信息标志
+const isDeleting = ref(false)
 //选中数组
-let ids = reactive({
+const ids = reactive({
+  value: []
+})
+// 删除学号列表
+const deletes = reactive({
   value: []
 })
 // 非单个禁用
-let single = ref(true)
+const single = ref(true)
 // 非多个禁用
-let multiple = ref(true)
+const multiple = ref(true)
 // 学生信息列表
-let stuInfos = reactive({
+const stuInfos = reactive({
   value: []
 })
 // 信息总数
-let total = ref(0)
+const total = ref(0)
 // 新增或修改对话框标题
-let title = ref('')
+const title = ref('')
 // 查询参数
-let queryParams = reactive({
+const queryParams = reactive({
   pageNum: 1,
   pageSize: 10,
   name: undefined,
   id: undefined
 })
+// 新增学生信息
+// const newStuInfo = reactive({
+//   name: undefined,
+//   id: undefined,
+//   sex: undefined,
+//   dept: undefined,
+//   classId: undefined,
+//   birthday: undefined,
+//   place: undefined
+// })
+const newStuInfo = reactive({
+  name: '吴嘉瑜',
+  id: 2001010207,
+  sex: '男',
+  dept: 5,
+  classId: 8,
+  birthday: '2002-09-19',
+  place: '江西新余'
+})
 // 列信息
-let columns = reactive([
+const columns = reactive([
   {
     key: 0,
     value: '学号',
@@ -276,6 +309,25 @@ const resetQuery = () => {
 // 增加按钮操作
 const handleAdd = () => {
   reset()
+  isAdding.value = true
+  title.value = '新增学生信息'
+}
+// 增加操作
+const add = () => {
+  addStu(newStuInfo).then(value => {
+    if(value.data === 1){
+      ElMessage({
+        message: '添加成功',
+        type: 'success',
+      })
+    }else{
+      ElMessage({
+        message: '学生已存在，添加失败',
+        type: 'error',
+      })
+    }
+    isAdding.value = false
+  })
 }
 // 修改按钮操作
 const handleEdit = (row) => {
@@ -283,22 +335,27 @@ const handleEdit = (row) => {
 }
 // 删除按钮操作
 const handleDelete = (row) => {
+  isDeleting.value = true
   if(row.hasOwnProperty('student_id')){
-    deleteStu({ids: [row.student_id]}).then(value => {
-      reset()
-      getList()
-    })
+    deletes.value = [row.student_id]
   }else{
-    deleteStu({ids: ids.value}).then(value => {
-      reset()
-      getList()
-    })
+    deletes.value = ids.value
   }
-
+}
+// 删除操作
+const del = () => {
+  deleteStu({ids: deletes.value}).then(value => {
+    isDeleting.value = false
+    reset()
+    getList()
+    console.log(value)
+  })
 }
 getList()
 </script>
 
 <style scoped>
-
+.dialog-footer button:first-child {
+  margin-right: 10px;
+}
 </style>

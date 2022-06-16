@@ -35,3 +35,5 @@ export function addStu(data: object){
         data
     })
 }
+
+
