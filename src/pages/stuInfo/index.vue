@@ -140,6 +140,13 @@
                     ><i i-ic-baseline-delete-outline>删除</i></el-button>
                 </template>
             </el-table-column>
+            <el-pagination
+                v-model:currentPage="1"
+                v-model:page-size="10"
+                :page-sizes="[5, 10, 15, 20]"
+                layout="sizes, prev, pager, next"
+                :total="1000"
+            />
         </el-table>
     </div>
 </template>
