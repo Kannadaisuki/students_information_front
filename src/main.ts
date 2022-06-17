@@ -6,6 +6,7 @@ import generatedRoutes from '~pages'
 import '@unocss/reset/normalize.css'
 import './styles/main.css'
 import 'uno.css'
+import 'element-plus/theme-chalk/index.css'
 
 const routes = setupLayouts(generatedRoutes)
 
