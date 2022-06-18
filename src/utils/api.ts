@@ -94,10 +94,49 @@ export function deleteReward(data: object){
     })
 }
 
-
+/**
+ * @description 添加学生奖励信息
+ * @param data
+ */
 export function addReward(data: object){
     return request({
         url: '/addReward',
+        method: 'post',
+        data
+    })
+}
+
+/**
+ * @description 获取学籍异动信息
+ * @param data
+ */
+export function changeInfoList(data: object){
+    return request({
+        url: '/findChangeList',
+        method: 'post',
+        data
+    })
+}
+
+/**
+ * @description 删除学籍异动信息
+ * @param data
+ */
+export function deleteChange(data: object){
+    return request({
+        url: '/deleteChange',
+        method: 'delete',
+        data
+    })
+}
+
+/**
+ * @description 新增学籍异动信息
+ * @param data
+ */
+export function addChange(data: object){
+    return request({
+        url: '/addChange',
         method: 'post',
         data
     })

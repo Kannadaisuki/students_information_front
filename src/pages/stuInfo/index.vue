@@ -159,7 +159,7 @@
           <el-button
             size="mini"
             type="text"
-            @click="handleDelete(scope.row)"
+            @click="handleAddChange(scope.row)"
           ><i i-raphael-exchange></i>学籍异动
           </el-button>
         </template>
@@ -302,10 +302,59 @@
       </span>
     </template>
   </el-dialog>
+
+  <!-- 学籍异动新增框 -->
+  <el-dialog
+    v-model="isAddingChange"
+    title="新增学生奖励信息"
+    @close="closeDialog"
+  >
+    <el-form
+      :model="newChangeInfo"
+      label-width="auto"
+      label-position="top"
+      :rules="rules"
+      ref="changeFormRef"
+    >
+      <el-form-item label="异动类型:" prop="type">
+        <el-select v-model="newChangeInfo.type" placeholder="请选择">
+          <el-option
+            v-for="(item, index) in ['转系', '休学', '复学', '退休', '毕业']"
+            :key="index"
+            :value="item"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="备注:" prop="description">
+        <el-input v-model="newChangeInfo.description" placeholder="请输入备注" />
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button
+          type="primary"
+          @click="addCha(changeFormRef)"
+        >
+          确认
+        </el-button>
+        <el-button @click="isAddingChange = false">取消</el-button>
+
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup>
-import {addReward, addStu, deleteStu, editStuInfo, getClassByDept, getDept, stuInfoList} from "../../utils/api"
+import {
+  addChange,
+  addReward,
+  addStu,
+  deleteStu,
+  editStuInfo,
+  getClassByDept,
+  getDept,
+  stuInfoList
+} from "../../utils/api"
 // 加载标志
 const loading = ref(false)
 // 修改学生信息标志
@@ -314,6 +363,8 @@ const isEditing = ref(false)
 const isAdding = ref(false)
 // 新增奖励信息标志
 const isAddingReward = ref(false)
+// 新增学籍异动信息标志
+const isAddingChange = ref(false)
 // 选中数组
 const ids = reactive({
   value: []
@@ -337,6 +388,7 @@ const title = ref('')
 // 触发查询
 const ruleFormRef = ref()
 const rewardFormRef = ref()
+const changeFormRef = ref()
 // 查询参数
 const queryParams = reactive({
   pageNum: 1,
@@ -358,6 +410,12 @@ const newStuInfo = reactive({
 const newRewardInfo = reactive({
   id: undefined,
   levels: undefined,
+  description: undefined
+})
+// 新增学籍异动信息
+const newChangeInfo = reactive({
+  id: undefined,
+  type: undefined,
   description: undefined
 })
 // 列信息
@@ -454,6 +512,13 @@ const rules = reactive({
     {
       required: true,
       message: '奖励等级不能为空',
+      trigger: ['blur', 'change']
+    }
+  ],
+  type: [
+    {
+      required: true,
+      message: '异动类型不能为空',
       trigger: ['blur', 'change']
     }
   ]
@@ -633,6 +698,37 @@ const addRew = async (formEl) => {
     }
   })
 }
+// 增加学籍异动按钮操作
+const handleAddChange = (row) => {
+  isAddingChange.value = true
+  newChangeInfo.id = row.student_id
+}
+// 增加学籍异动操作
+const addCha = async (formEl) => {
+  if(!formEl) return
+  await formEl.validate((valid, fields) => {
+    if (valid) {
+      console.log(newChangeInfo)
+      addChange(newChangeInfo).then(value => {
+        if (value.data === 1) {
+          ElMessage({
+            message: '添加成功',
+            type: 'success',
+          })
+        } else {
+          ElMessage({
+            message: '学生已存在，添加失败',
+            type: 'error',
+          })
+        }
+        isAddingChange.value = false
+        resetQuery()
+      })
+    } else {
+      console.log('error submit!', fields)
+    }
+  })
+}
 // 打开新增（修改）框
 const openDialog = () => {
   if(depts.length !== 0)  return
@@ -658,6 +754,7 @@ const closeDialog = () => {
   isAdding.value = false
   isEditing.value = false
   isAddingReward.value = false
+  isAddingChange.value = false
 }
 getList()
 </script>

@@ -66,7 +66,7 @@
       <el-table-column
         label="奖励编号"
         align="center"
-        key="reward_id"
+        key="rewardId"
         prop="reward_id"
         v-if="columns[0].visible"
       />
@@ -209,7 +209,7 @@ const resetQuery = () => {
 // 删除按钮操作
 const handleDelete = () => {
   ElMessageBox.confirm(
-    '是否确认删除所选学生信息？',
+    '是否确认删除所选奖励信息？',
     '提示',
     {
       confirmButtonText: '确认',
