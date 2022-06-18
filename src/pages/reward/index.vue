@@ -16,7 +16,6 @@
         <el-input
           v-model="queryParams.id"
           placeholder="请输入学号"
-          clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -24,7 +23,6 @@
         <el-input
           v-model="queryParams.name"
           placeholder="请输入姓名"
-          clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -66,46 +64,45 @@
       <el-table-column
         label="奖励编号"
         align="center"
-        key="rewardId"
+        column-key="rewardId"
         prop="reward_id"
         v-if="columns[0].visible"
       />
       <el-table-column
         label="学号"
         align="center"
-        key="studenId"
+        column-key="studentId"
         prop="student_id"
         v-if="columns[1].visible"
-        :show-overflow-tooltip="true"
       />
       <el-table-column
         label="姓名"
         align="center"
-        key="name"
+        column-key="name"
         prop="student.student_name"
         v-if="columns[2].visible"
       />
       <el-table-column
         label="奖励等级"
         align="center"
-        key="rewardLevel"
+        column-key="rewardLevel"
         prop="s_reward_codes.r_description"
         v-if="columns[3].visible"
       />
       <el-table-column
-        label="备注"
+        label="详细描述"
         align="center"
-        key="description"
+        column-key="description"
         prop="description"
         v-if="columns[4].visible"
       />
       <el-table-column
-      label="创建时间"
-      align="center"
-      key="createTime"
-      prop="rec_time"
-      v-if="columns[4].visible"
-    />
+        label="创建时间"
+        align="center"
+        column-key="createTime"
+        prop="rec_time"
+        v-if="columns[4].visible"
+      />
     </el-table>
     <el-pagination
       v-model:currentPage="queryParams.pageNum"

@@ -16,7 +16,6 @@
         <el-input
           v-model="queryParams.id"
           placeholder="请输入学号"
-          clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -24,7 +23,6 @@
         <el-input
           v-model="queryParams.name"
           placeholder="请输入姓名"
-          clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -66,45 +64,50 @@
       <el-table-column
         label="异动编号"
         align="center"
-        key="changeId"
+        column-key="changeId"
         prop="change_id"
         v-if="columns[0].visible"
+        min-width="100"
       />
       <el-table-column
         label="学号"
         align="center"
-        key="studenId"
+        column-key="studentId"
         prop="student_id"
         v-if="columns[1].visible"
-        :show-overflow-tooltip="true"
+        min-width="120"
       />
       <el-table-column
         label="姓名"
         align="center"
-        key="name"
+        column-key="name"
         prop="student.student_name"
         v-if="columns[2].visible"
+        min-width="80"
       />
       <el-table-column
         label="异动类型"
         align="center"
-        key="type"
+        column-key="type"
         prop="s_change_codes.c_description"
         v-if="columns[3].visible"
+        min-width="100"
       />
       <el-table-column
-        label="备注"
+        label="详细描述"
         align="center"
-        key="description"
+        column-key="description"
         prop="description"
         v-if="columns[4].visible"
+        min-width="450"
       />
       <el-table-column
         label="创建时间"
         align="center"
-        key="createTime"
+        column-key="createTime"
         prop="rec_time"
         v-if="columns[4].visible"
+        min-width="200"
       />
     </el-table>
     <el-pagination
@@ -124,7 +127,7 @@
 
 <script setup>
 
-import {changeInfoList, deleteChange, deleteReward, rewardInfoList} from "../../utils/api";
+import {changeInfoList, deleteChange} from "../../utils/api";
 // 加载标志
 const loading = ref(false)
 // 选中数组

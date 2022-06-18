@@ -107,7 +107,7 @@ export function addReward(data: object){
 }
 
 /**
- * @description 获取学籍异动信息
+ * @description 获取学籍异动信息列表
  * @param data
  */
 export function changeInfoList(data: object){
@@ -137,6 +137,63 @@ export function deleteChange(data: object){
 export function addChange(data: object){
     return request({
         url: '/addChange',
+        method: 'post',
+        data
+    })
+}
+
+/**
+ * @description 获取学生惩罚信息列表
+ * @param data
+ */
+export function punishmentList(data: object){
+    return request({
+        url: '/findPunishmentList' ,
+        method: 'post',
+        data
+    })
+}
+
+/**
+ * @description 删除学生惩罚信息
+ * @param data
+ */
+export function deletePunishment(data: object){
+    return request({
+        url: '/deletePunishment',
+        method: 'delete',
+         data
+    })
+}
+
+/**
+ * @description 新增学生惩罚信息
+ * @param data
+ */
+export function addPunishment(data: object){
+    return request({
+        url: '/addPunishment',
+        method: 'post',
+        data
+    })
+}
+
+/**
+ * @description 修改惩罚状态
+ * @param data
+ */
+export function changeState(data: object){
+    return request({
+        url: '/setPunishmentTF',
+        method: 'post',
+        data
+    })
+}
+
+
+export function detail(data: object){
+    return request({
+        url: '/findStudentAllInfo',
         method: 'post',
         data
     })

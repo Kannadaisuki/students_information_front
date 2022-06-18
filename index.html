@@ -6,6 +6,22 @@
   <link rel="apple-touch-icon" href="/pwa-192x192.png">
   <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#00aba9">
   <meta name="msapplication-TileColor" content="#00aba9">
+  <style>
+      *{
+          -webkit-touch-callout:none; /*系统默认菜单被禁用*/
+          -webkit-user-select:none; /*webkit浏览器*/
+          -khtml-user-select:none; /*早期浏览器*/
+          -moz-user-select:none;/*火狐*/
+          -ms-user-select:none; /*IE10*/
+          user-select:none;
+      }
+      input{
+          -webkit-user-select:auto; /*webkit浏览器*/
+      }
+      textarea{
+          -webkit-user-select:auto; /*webkit浏览器*/
+      }
+  </style>
 </head>
 <body class="font-sans">
   <div id="app"></div>
