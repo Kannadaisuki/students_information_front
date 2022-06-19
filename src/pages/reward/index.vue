@@ -1,5 +1,5 @@
 <template>
-  <TopBar title="奖励管理"></TopBar>
+  <TopBar title="奖励管理" />
   <div
     bg-hex-ffffff
     m-10px

@@ -1,5 +1,5 @@
 <template>
-  <TopBar title="学生信息管理"></TopBar>
+  <TopBar title="学生信息管理" />
   <div
     bg-hex-ffffff
     m-10px
